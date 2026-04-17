@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}페이지를 찾을 수 없습니다 | 우리금융자산커뮤니티{% endblock title %}
+
+{% block content %}
+<div style="text-align: center; padding: 8rem 2rem; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin: 2rem auto; max-width: 800px; border: 1px solid var(--border);">
+    <div style="font-size: 6rem; font-weight: 900; color: var(--woori-blue); margin-bottom: 1rem; line-height: 1;">404</div>
+    <div style="width: 60px; height: 4px; background: var(--woori-light-blue); margin: 0 auto 2rem;"></div>
+    <h2 style="font-size: 2rem; color: #333; margin-bottom: 1.5rem;">원하시는 페이지를 찾을 수 없습니다.</h2>
+    <p style="color: var(--text-sub); font-size: 1.1rem; line-height: 1.8; margin-bottom: 3rem;">
+        입력하신 주소가 잘못되었거나, 페이지가 삭제되었을 수 있습니다.<br>
+        궁금하신 사항은 고객센터로 문의해 주시기 바랍니다.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="{% url 'articles:index' %}" class="btn btn-woori" style="padding: 1rem 3rem;">메인으로 이동</a>
+        <a href="javascript:history.back()" class="btn btn-outline" style="padding: 1rem 3rem;">이전 페이지</a>
+    </div>
+</div>
+{% endblock content %}

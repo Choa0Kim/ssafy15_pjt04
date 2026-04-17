@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}자산 목록 | 금융 자산 커뮤니티{% endblock title %}
+
+{% block content %}
+<div class="hero">
+    <h1>내일의 가치를 만드는<br>금융 자산 인사이트</h1>
+    <p style="font-size: 1.2rem; opacity: 0.9;">신뢰할 수 있는 데이터와 전문가의 분석으로 자산의 미래를 그려보세요.</p>
+</div>
+
+<!-- 카테고리 탭 필터링 영역 -->
+<div class="filter-tabs" style="display: flex; gap: 10px; margin-bottom: 2.5rem; justify-content: center; flex-wrap: wrap;">
+    <button class="tab-btn active" data-filter="all" style="padding: 0.6rem 1.5rem; border-radius: 30px; border: 1.5px solid var(--woori-blue); background: var(--woori-blue); color: white; font-weight: 700; cursor: pointer; transition: all 0.2s;">전체</button>
+    <button class="tab-btn" data-filter="주식" style="padding: 0.6rem 1.5rem; border-radius: 30px; border: 1.5px solid var(--woori-blue); background: white; color: var(--woori-blue); font-weight: 700; cursor: pointer; transition: all 0.2s;">주식</button>
+    <button class="tab-btn" data-filter="원자재" style="padding: 0.6rem 1.5rem; border-radius: 30px; border: 1.5px solid var(--woori-blue); background: white; color: var(--woori-blue); font-weight: 700; cursor: pointer; transition: all 0.2s;">원자재</button>
+    <button class="tab-btn" data-filter="채권" style="padding: 0.6rem 1.5rem; border-radius: 30px; border: 1.5px solid var(--woori-blue); background: white; color: var(--woori-blue); font-weight: 700; cursor: pointer; transition: all 0.2s;">채권</button>
+    <button class="tab-btn" data-filter="암호자산" style="padding: 0.6rem 1.5rem; border-radius: 30px; border: 1.5px solid var(--woori-blue); background: white; color: var(--woori-blue); font-weight: 700; cursor: pointer; transition: all 0.2s;">암호자산</button>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="font-size: 1.8rem; border-left: 6px solid var(--woori-blue); padding-left: 15px; margin: 0;">자산 목록</h2>
+</div>
+
+<div class="asset-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+    {% for asset in assets %}
+        <div class="asset-card-item" data-category="{{ asset.category }}" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid var(--border);" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="padding: 2rem;">
+                <!-- 알약 모양 카테고리 뱃지 -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <span style="background: #e8f0fe; color: var(--woori-blue); padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;">{{ asset.category }}</span>
+                    
+                    <!-- 알약 모양 위험도 뱃지 (조건부 색상) -->
+                    {% if asset.risk_level == '상' or asset.risk_level == '중상' %}
+                        <span style="background: #fff1f0; color: #cf1322; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;">위험: {{ asset.risk_level }}</span>
+                    {% elif asset.risk_level == '중' %}
+                        <span style="background: #fffbe6; color: #d48806; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;">주의: {{ asset.risk_level }}</span>
+                    {% else %}
+                        <span style="background: #f6ffed; color: #389e0d; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;">안정: {{ asset.risk_level }}</span>
+                    {% endif %}
+                </div>
+
+                <h3 style="font-size: 1.4rem; margin: 0 0 1rem 0; color: var(--woori-blue);">{{ asset.name }}</h3>
+                <p style="color: var(--text-sub); line-height: 1.7; margin-bottom: 1.5rem; height: 80px; overflow: hidden;">{{ asset.description }}</p>
+                <div style="display: flex; justify-content: flex-end; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <a href="{% url 'articles:asset_board' asset.id %}" class="btn-woori" style="text-decoration: none; padding: 0.5rem 1.5rem; border-radius: 4px; font-size: 0.95rem; font-weight: 700;">분석 참여</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 5rem; background: white; border-radius: 12px; border: 1px dashed var(--border);">
+            <p style="color: var(--text-sub);">데이터를 불러오는 중입니다...</p>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const assetCards = document.querySelectorAll('.asset-card-item');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+
+                // 버튼 활성화 스타일 전환
+                tabBtns.forEach(b => {
+                    b.style.background = 'white';
+                    b.style.color = 'var(--woori-blue)';
+                    b.classList.remove('active');
+                });
+                btn.style.background = 'var(--woori-blue)';
+                btn.style.color = 'white';
+                btn.classList.add('active');
+
+                // 카드 필터링
+                assetCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                        // 애니메이션 효과
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.style.transition = 'opacity 0.4s ease';
+                            card.style.opacity = '1';
+                        }, 10);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock content %}

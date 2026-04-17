@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}게시글 작성 - {{ asset.name }}{% endblock title %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: 2.5rem;">
+    <div style="margin-bottom: 2.5rem;">
+        <h1 style="margin: 0 0 0.5rem 0; font-size: 1.75rem;">새 인사이트 작성</h1>
+        <p style="color: #5f6368; margin: 0;">{{ asset.name }}에 대한 당신의 분석을 공유해 주세요.</p>
+    </div>
+
+    <form action="{% url 'articles:post_create' asset.id %}" method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom: 1.5rem;">
+            <label for="title" style="display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #3c4043;">제목</label>
+            <input type="text" name="title" id="title" value="{{ title|default:'' }}" placeholder="게시글의 핵심 내용을 적어주세요" required 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid #dadce0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline-color: #1a73e8;">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="author" style="display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #3c4043;">작성자명</label>
+            <input type="text" name="author" id="author" value="{{ author|default:'' }}" placeholder="익명(기본값)" 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid #dadce0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline-color: #1a73e8;">
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <label for="content" style="display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #3c4043;">분석 내용</label>
+            <textarea name="content" id="content" placeholder="심도 있는 분석 내용을 자유롭게 공유해 주세요. 부적절한 표현은 LLM에 의해 자동 차단될 수 있습니다." required rows="15" 
+                      style="width: 100%; padding: 0.75rem; border: 1px solid #dadce0; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box; outline-color: #1a73e8; resize: vertical; line-height: 1.6;">{{ content|default:'' }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <a href="{% url 'articles:asset_board' asset.id %}" class="btn btn-secondary">취소</a>
+            <button type="submit" class="btn btn-primary" style="padding: 0.6rem 2.5rem;">분석글 게시</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

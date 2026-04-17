@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}금융 자산 커뮤니티{% endblock title %}</title>
+    <style>
+        :root {
+            --woori-blue: #0067ac;
+            --woori-light-blue: #00a0e9;
+            --woori-gray: #717171;
+            --woori-bg: #f8f9fa;
+            --border: #e2e8f0;
+            --text-main: #111;
+            --text-sub: #666;
+            --btn-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--woori-bg);
+            color: var(--text-main);
+            word-break: keep-all;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--woori-blue);
+            text-decoration: none;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: #111;
+        }
+
+        .nav-bar {
+            background-color: var(--woori-blue);
+            padding: 0.8rem 0;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-content a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            margin-right: 2.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-content a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Section */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: calc(100vh - 250px);
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(135deg, #0067ac 0%, #00a0e9 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--btn-shadow);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        /* Message Styles */
+        .messages {
+            margin-bottom: 2rem;
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border-left: 5px solid;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .message-error {
+            background-color: #fff1f0;
+            color: #cf1322;
+            border-color: #ffa39e;
+        }
+
+        /* UI Elements */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-woori {
+            background-color: var(--woori-blue);
+            color: #fff;
+        }
+
+        .btn-woori:hover {
+            background-color: #005a96;
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow);
+        }
+
+        .btn-outline {
+            background-color: #fff;
+            color: var(--woori-blue);
+            border: 1.5px solid var(--woori-blue);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+            text-align: left;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-info p {
+            font-size: 0.85rem;
+            margin: 0.3rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <a href="{% url 'articles:index' %}">
+                    🏛️ 민초 <span>금융 자산 커뮤니티</span>
+                </a>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <div class="nav-content">
+                <a href="{% url 'articles:index' %}">자산목록</a>
+                <a href="{% url 'articles:portfolio' %}">포트폴리오</a>
+                <a href="#">커뮤니티</a>
+                <a href="#">자료실</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <p><strong>민초금융자산커뮤니티</strong></p>
+                <p>서울특별시 중구 소공로 51 (회현동 1가)</p>
+                <p>대표번호 : 02-1234-5678 | 사업자등록번호 : 123-45-67890</p>
+                <p>&copy; 2026 Woori Asset Community. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} | 우리금융자산커뮤니티{% endblock title %}
+
+{% block content %}
+<div style="background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+    <div style="padding: 4rem 5rem;">
+        <div style="margin-bottom: 3rem; border-bottom: 2px solid #333; padding-bottom: 2rem;">
+            <div style="color: var(--woori-light-blue); font-weight: 700; margin-bottom: 1rem;">{{ asset.name }} &middot; 자산 분석</div>
+            <h1 style="font-size: 2.5rem; margin: 0 0 1.5rem 0; line-height: 1.3;">{{ post.title }}</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 45px; height: 45px; background: var(--woori-blue); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.2rem;">{{ post.author|slice:":1" }}</div>
+                    <div>
+                        <div style="font-weight: 800; font-size: 1.1rem;">{{ post.author }} <span style="font-weight: 400; color: var(--woori-gray); font-size: 0.9rem; margin-left: 10px;">전문위원</span></div>
+                        <div style="font-size: 0.9rem; color: var(--text-sub);">발행일: {{ post.created_at|date:"Y.m.d H:i" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="font-size: 1.2rem; line-height: 2; color: #333; min-height: 400px; padding-bottom: 4rem;">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% url 'articles:asset_board' asset.id %}" class="btn btn-outline" style="border-radius: 4px;">&lsaquo; 목록으로 이동</a>
+            <div style="display: flex; gap: 10px;">
+                <a href="{% url 'articles:post_update' post.pk %}" class="btn btn-outline" style="border-radius: 4px; border-color: #ddd; color: #666;">수정</a>
+                <form action="{% url 'articles:post_delete' post.pk %}" method="POST" onsubmit="return confirm('이 게시글을 삭제하시겠습니까?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-woori" style="background: #cf1322; padding: 0.8rem 2rem; border-radius: 4px;">삭제</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

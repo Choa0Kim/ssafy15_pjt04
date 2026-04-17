@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ asset.name }} 토론 게시판 | 우리금융자산커뮤니티{% endblock title %}
+
+{% block content %}
+<div style="background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+    <div style="background: linear-gradient(to right, #f8f9fa, #fff); padding: 3rem; border-bottom: 1px solid var(--border);">
+        <nav style="font-size: 0.9rem; color: var(--woori-gray); margin-bottom: 1.5rem;">
+            금융 자산 &rsaquo; <strong>{{ asset.name }}</strong>
+        </nav>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <h1 style="font-size: 2.2rem; margin: 0 0 1rem 0; color: var(--woori-blue);">{{ asset.name }} <span style="font-weight: 300; font-size: 1.5rem; color: #333;">토론 게시판</span></h1>
+                <p style="color: var(--text-sub); font-size: 1.1rem; max-width: 800px; margin: 0;">{{ asset.description }}</p>
+            </div>
+            <a href="{% url 'articles:post_create' asset.id %}" class="btn btn-woori">+ 분석글 작성</a>
+        </div>
+    </div>
+
+    <div style="padding: 2rem 3rem;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--woori-blue);">
+                    <th style="padding: 1.2rem 1rem; color: var(--woori-blue); font-weight: 800; width: 60%;">제목</th>
+                    <th style="padding: 1.2rem 1rem; color: var(--woori-blue); font-weight: 800; text-align: center;">작성자</th>
+                    <th style="padding: 1.2rem 1rem; color: var(--woori-blue); font-weight: 800; text-align: center;">등록일</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr style="border-bottom: 1px solid var(--border); transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f1f8ff'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: 1.5rem 1rem;">
+                            <a href="{% url 'articles:post_detail' post.pk %}" style="text-decoration: none; color: #111; font-weight: 500; font-size: 1.1rem; display: block;">
+                                {{ post.title }}
+                            </a>
+                        </td>
+                        <td style="padding: 1.5rem 1rem; text-align: center; color: var(--text-sub);">{{ post.author }}</td>
+                        <td style="padding: 1.5rem 1rem; text-align: center; color: var(--text-sub);">{{ post.created_at|date:"Y.m.d" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" style="padding: 5rem; text-align: center; color: var(--text-sub); font-style: italic;">
+                            등록된 분석글이 없습니다.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

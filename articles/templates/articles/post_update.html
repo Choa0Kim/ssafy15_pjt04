@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}게시글 수정 - {{ post.title }}{% endblock title %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: 2.5rem;">
+    <div style="margin-bottom: 2.5rem;">
+        <h1 style="margin: 0 0 0.5rem 0; font-size: 1.75rem;">분석글 수정</h1>
+        <p style="color: #5f6368; margin: 0;">작성하신 내용을 정교하게 다듬어 보세요.</p>
+    </div>
+
+    <form action="{% url 'articles:post_update' post.pk %}" method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom: 1.5rem;">
+            <label for="title" style="display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #3c4043;">제목</label>
+            <input type="text" name="title" id="title" value="{{ error_title|default:post.title }}" required 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid #dadce0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline-color: #1a73e8;">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="author" style="display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #3c4043;">작성자명</label>
+            <input type="text" name="author" id="author" value="{{ error_author|default:post.author }}" 
+                   style="width: 100%; padding: 0.75rem; border: 1px solid #dadce0; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline-color: #1a73e8;">
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <label for="content" style="display: block; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.9rem; color: #3c4043;">분석 내용</label>
+            <textarea name="content" id="content" required rows="15" 
+                      style="width: 100%; padding: 0.75rem; border: 1px solid #dadce0; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box; outline-color: #1a73e8; resize: vertical; line-height: 1.6;">{{ error_content|default:post.content }}</textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <a href="{% url 'articles:post_detail' post.pk %}" class="btn btn-secondary">취소</a>
+            <button type="submit" class="btn btn-primary" style="padding: 0.6rem 2.5rem;">수정 내용 저장</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}
