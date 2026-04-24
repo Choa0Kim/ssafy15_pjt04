@@ -1,0 +1,15 @@
+{% extends 'community/base.html' %}
+
+{% block title %}로그인 - 금융 자산 커뮤니티{% endblock %}
+
+{% block content %}
+<h1 class="page-title">로그인</h1>
+
+<form action="{% url 'accounts:login' %}" method="post" class="mt-4">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="mt-4">
+    <button type="submit" class="btn">로그인</button>
+  </div>
+</form>
+{% endblock %}

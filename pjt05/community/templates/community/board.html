@@ -1,0 +1,59 @@
+{% extends "community/base.html" %}
+{% block title %}{{ asset.name }} 토론 게시판 | 금융 자산 커뮤니티{% endblock %}
+{% block extra_css %}
+<style>
+  .board-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .board-header .btn {
+    flex-shrink: 0;
+  }
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .post-list .post-item {
+    margin: 0;
+  }
+  .post-list .post-meta {
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+  }
+  .post-list .empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+</style>
+{% endblock %}
+{% block content %}
+<p class="breadcrumb">
+  <a href="{% url 'community:asset_list' %}">자산 목록</a> &gt; {{ asset.name }}
+</p>
+<div class="board-header">
+  <div>
+    <h1 class="page-title">{{ asset.name }} 토론 게시판</h1>
+    <p class="text-muted mb-0 mt-1">{{ asset.description }}</p>
+  </div>
+  <a href="{% url 'community:post_create' asset.id %}" class="btn">글쓰기</a>
+</div>
+<ul class="post-list">
+  {% for post in posts %}
+  <li class="post-item card-item">
+    <a href="{% url 'community:post_detail' asset.id post.id %}">{{ post.title }}</a>
+    <p class="text-muted post-meta mb-0">{{ post.author|default:"익명" }} · {{ post.created_at|date:"Y-m-d H:i" }}</p>
+  </li>
+  {% empty %}
+  <li class="empty">아직 게시글이 없습니다. 첫 글을 작성해 보세요.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'community/base.html' %}
+
+{% block title %}{{ person.nickname }}님의 프로필{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ person.nickname }}님의 프로필</h1>
+
+<div class="mt-4 card-item" style="display: flex; align-items: flex-start; gap: 20px;">
+  {% if person.profile_image %}
+    <img src="{{ person.profile_image.url }}" alt="프로필 이미지" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+  {% else %}
+    <div style="width: 100px; height: 100px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #64748b;">
+      이미지 없음
+    </div>
+  {% endif %}
+  <div>
+    <h3>{{ person.username }}</h3>
+    <p style="margin: 0.5rem 0;"><strong>닉네임:</strong> {{ person.nickname }}</p>
+    <p style="margin: 0.5rem 0;"><strong>관심 종목:</strong> 
+      {% if interest_stocks %}
+        {{ interest_stocks|join:", " }}
+      {% else %}
+        선택한 관심 종목이 없습니다.
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+<h2 class="page-title mt-4" style="margin-top: 2rem;">작성한 게시글</h2>
+{% if posts %}
+  <ul style="list-style: none; padding: 0;">
+    {% for post in posts %}
+      <li class="card-item mb-2 mt-2">
+        <a href="{% url 'community:post_detail' post.asset_id post.id %}">{{ post.title }}</a>
+        <div class="text-muted" style="margin-top: 5px;">{{ post.created_at|date:"Y-m-d H:i" }}</div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="text-muted mt-2">작성한 게시글이 없습니다.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "community/base.html" %}
+{% block title %}{% if is_edit %}글 수정{% else %}글쓰기 | {{ asset.name }} | 금융 자산 커뮤니티{% endif %}{% endblock %}
+{% block extra_css %}
+<style>
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  .form-input-full {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+  }
+  .form-input-author {
+    width: 100%;
+    max-width: 240px;
+    padding: 0.5rem 0.75rem;
+  }
+  .form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    min-height: 200px;
+    resize: vertical;
+  }
+  .form-actions {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+</style>
+{% endblock %}
+{% block content %}
+<p class="breadcrumb">
+  <a href="{% url 'community:asset_list' %}">자산 목록</a> &gt;
+  <a href="{% url 'community:board' asset.id %}">{{ asset.name }}</a> &gt;
+  {% if is_edit %}글 수정{% else %}글쓰기{% endif %}
+</p>
+<h1 class="page-title">{{ asset.name }} — {% if is_edit %}글 수정{% else %}글쓰기{% endif %}</h1>
+<form method="post" class="mt-2">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="id_title">제목</label>
+    <input id="id_title" type="text" name="title" value="{{ title|default:'' }}" required maxlength="200" class="form-input-full">
+  </div>
+  <div class="form-group">
+    <label for="id_content">내용</label>
+    <textarea id="id_content" name="content" rows="10" required class="form-textarea">{{ content|default:'' }}</textarea>
+  </div>
+  <div class="form-actions btn-group">
+    <button type="submit" class="btn">{% if is_edit %}수정 저장{% else %}등록{% endif %}</button>
+    <a href="{% url 'community:board' asset.id %}" class="btn btn-secondary">취소</a>
+  </div>
+</form>
+{% endblock %}
