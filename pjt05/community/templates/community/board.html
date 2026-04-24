@@ -6,9 +6,11 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-border);
   }
   .board-header .btn {
     flex-shrink: 0;
@@ -19,19 +21,46 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
   }
   .post-list .post-item {
     margin: 0;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid transparent;
+  }
+  .post-list .post-item:hover {
+    border-left-color: var(--color-primary);
+  }
+  .post-list .post-main {
+    flex-grow: 1;
+  }
+  .post-list .post-link {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+  .post-list .post-item:hover .post-link {
+    color: var(--color-primary);
   }
   .post-list .post-meta {
-    font-size: 0.8125rem;
-    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
   }
   .post-list .empty {
-    padding: 2rem;
+    padding: 4rem 2rem;
     text-align: center;
     color: var(--color-text-muted);
+    background: var(--color-bg);
+    border-radius: var(--radius);
+    border: 1px dashed var(--color-border);
   }
 </style>
 {% endblock %}
@@ -49,8 +78,14 @@
 <ul class="post-list">
   {% for post in posts %}
   <li class="post-item card-item">
-    <a href="{% url 'community:post_detail' asset.id post.id %}">{{ post.title }}</a>
-    <p class="text-muted post-meta mb-0">{{ post.author|default:"익명" }} · {{ post.created_at|date:"Y-m-d H:i" }}</p>
+    <div class="post-main">
+      <a href="{% url 'community:post_detail' asset.id post.id %}" class="post-link">{{ post.title }}</a>
+      <div class="post-meta">
+        <span>작성자: {{ post.author|default:"익명" }}</span>
+        <span>·</span>
+        <span>{{ post.created_at|date:"Y-m-d H:i" }}</span>
+      </div>
+    </div>
   </li>
   {% empty %}
   <li class="empty">아직 게시글이 없습니다. 첫 글을 작성해 보세요.</li>

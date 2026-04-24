@@ -24,3 +24,12 @@ def get_asset_by_id(asset_id):
         if a.get("id") == asset_id:
             return a
     return None
+
+def load_smart_money():
+    """JSON 파일에서 스마트 머니 포트폴리오 데이터 로드"""
+    base = Path(__file__).resolve().parent.parent
+    path = base / "data" / "smart_money.json"
+    if not path.exists():
+        return {}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)

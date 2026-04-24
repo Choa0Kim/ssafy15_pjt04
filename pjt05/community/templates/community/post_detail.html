@@ -2,26 +2,106 @@
 {% block title %}{{ post.title }} | 금융 자산 커뮤니티{% endblock %}
 {% block extra_css %}
 <style>
+  .article-wrapper {
+    background: var(--color-bg-card);
+    border-radius: var(--radius);
+    padding: 3rem;
+    box-shadow: var(--shadow-sm);
+    border: none;
+    margin-bottom: 2rem;
+  }
   .article-header {
-    padding-bottom: 1rem;
-    margin-bottom: 1.25rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
     border-bottom: 1px solid var(--color-border);
   }
   .article-header .page-title {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+    font-weight: 800;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
   }
   .post-content {
     white-space: pre-wrap;
-    line-height: 1.7;
-    font-size: 0.9375rem;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: var(--color-text);
+    min-height: 150px;
   }
   .post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 1.5rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--color-border);
   }
-  .post-actions .form-inline {
-    display: inline;
+  .post-actions .btn-group {
+    display: flex;
+    gap: 0.75rem;
+  }
+  /* Comments Section */
+  .comments-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--color-border);
+  }
+  .comments-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+  }
+  .comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+  }
+  .comment-item {
+    padding: 1.5rem;
+    background: var(--color-bg);
+    border-radius: var(--radius-btn);
+    margin-bottom: 1rem;
+  }
+  .comment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .comment-author {
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .comment-date {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+  .comment-content {
+    white-space: pre-wrap;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+  .comment-delete-btn {
+    color: var(--color-danger);
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+  }
+  .comment-delete-btn:hover {
+    text-decoration: underline;
+  }
+  .comment-form-wrap {
+    background: var(--color-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius-btn);
   }
 </style>
 {% endblock %}
@@ -30,17 +110,67 @@
   <a href="{% url 'community:asset_list' %}">자산 목록</a> &gt;
   <a href="{% url 'community:board' asset.id %}">{{ asset.name }}</a> &gt; 글 보기
 </p>
-<article>
-  <header class="article-header">
-    <h1 class="page-title">{{ post.title }}</h1>
-    <p class="text-muted mb-0">{{ post.author|default:"익명" }} · {{ post.created_at|date:"Y-m-d H:i" }}</p>
-  </header>
-  <div class="post-content">{{ post.content }}</div>
-</article>
-<div class="post-actions btn-group">
+<div class="article-wrapper">
+  <article>
+    <header class="article-header">
+      <h1 class="page-title">{{ post.title }}</h1>
+      <div class="article-meta">
+        <span class="font-weight-bold" style="color: var(--color-text); font-weight: 700;">{{ post.author|default:"익명" }}</span>
+        <span>·</span>
+        <span>{{ post.created_at|date:"Y.m.d H:i" }}</span>
+      </div>
+    </header>
+    <div class="post-content">{{ post.content }}</div>
+  </article>
+
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <h3 class="comments-title">댓글 ({{ comments|length }})</h3>
+    <ul class="comment-list">
+      {% for comment in comments %}
+      <li class="comment-item">
+        <div class="comment-meta">
+          <div>
+            <span class="comment-author">{{ comment.author }}</span>
+            <span style="margin: 0 0.5rem; color: var(--color-text-muted)">·</span>
+            <span class="comment-date">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+          </div>
+          {% if user.username == comment.author %}
+          <form action="{% url 'community:comment_delete' asset.id post.id comment.id %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="comment-delete-btn" onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
+          </form>
+          {% endif %}
+        </div>
+        <div class="comment-content">{{ comment.content }}</div>
+      </li>
+      {% empty %}
+      <li style="color: var(--color-text-muted); font-size: 0.95rem;">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</li>
+      {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated %}
+    <div class="comment-form-wrap">
+      <form action="{% url 'community:comment_create' asset.id post.id %}" method="POST">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <div style="text-align: right; margin-top: 1rem;">
+          <button type="submit" class="btn">댓글 등록</button>
+        </div>
+      </form>
+    </div>
+    {% else %}
+    <div class="comment-form-wrap" style="text-align: center; padding: 2rem;">
+      <p style="margin-bottom: 1rem;">댓글을 남기려면 로그인이 필요합니다.</p>
+      <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn">로그인 하기</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<div class="post-actions">
   <a href="{% url 'community:board' asset.id %}" class="btn btn-secondary">목록으로</a>
   {% if user.username == post.author %}
-  <div class="mt-4 btn-group">
+  <div class="btn-group">
     <a href="{% url 'community:post_update' asset.id post.id %}" class="btn">수정</a>
     <form action="{% url 'community:post_delete' asset.id post.id %}" method="POST" style="display:inline;">
       {% csrf_token %}

@@ -3,40 +3,88 @@
 {% block title %}{{ person.nickname }}님의 프로필{% endblock %}
 
 {% block content %}
-<h1 class="page-title">{{ person.nickname }}님의 프로필</h1>
+<h1 class="page-title" style="margin-bottom: 1.5rem;">{{ person.nickname }}님의 프로필</h1>
 
-<div class="mt-4 card-item" style="display: flex; align-items: flex-start; gap: 20px;">
-  {% if person.profile_image %}
-    <img src="{{ person.profile_image.url }}" alt="프로필 이미지" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
-  {% else %}
-    <div style="width: 100px; height: 100px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #64748b;">
-      이미지 없음
+<div class="card-item" style="display: flex; flex-direction: column; padding: 0; overflow: hidden; border: none;">
+  <div style="height: 140px; background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);"></div>
+  <div style="padding: 0 2.5rem 2.5rem 2.5rem; position: relative; margin-top: -60px; display: flex; align-items: flex-end; gap: 2rem;">
+    {% if person.profile_image %}
+      <img src="{{ person.profile_image.url }}" alt="프로필 이미지" style="width: 140px; height: 140px; object-fit: cover; border-radius: 50%; border: 6px solid var(--color-bg-card); box-shadow: var(--shadow-md); background: var(--color-bg-card);">
+    {% else %}
+      <div style="width: 140px; height: 140px; border-radius: 50%; background: var(--color-bg); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-weight: 800; font-size: 1rem; border: 6px solid var(--color-bg-card); box-shadow: var(--shadow-md);">
+        No Image
+      </div>
+    {% endif %}
+    <div style="padding-bottom: 0.5rem;">
+      <h2 style="margin: 0 0 0.3rem 0; font-size: 2rem; font-weight: 900;">{{ person.username }}</h2>
+      <p style="margin: 0; color: var(--color-text-muted); font-size: 1.1rem; font-weight: 600;">{{ person.nickname }}</p>
+      
+      <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+        {% if person.investment_experience %}
+        <span style="background: #e8f0fe; color: #1a73e8; padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 800; font-size: 0.85rem;">📊 경험: {{ person.investment_experience }}</span>
+        {% endif %}
+        {% if person.risk_tolerance %}
+        <span style="background: #fce8e6; color: #d93025; padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 800; font-size: 0.85rem;">🔥 성향: {{ person.risk_tolerance }}</span>
+        {% endif %}
+        {% if person.investment_goal %}
+        <span style="background: #e6f4ea; color: #1e8e3e; padding: 0.3rem 0.8rem; border-radius: 50px; font-weight: 800; font-size: 0.85rem;">🎯 목표: {{ person.investment_goal }}</span>
+        {% endif %}
+      </div>
     </div>
-  {% endif %}
-  <div>
-    <h3>{{ person.username }}</h3>
-    <p style="margin: 0.5rem 0;"><strong>닉네임:</strong> {{ person.nickname }}</p>
-    <p style="margin: 0.5rem 0;"><strong>관심 종목:</strong> 
-      {% if interest_stocks %}
-        {{ interest_stocks|join:", " }}
-      {% else %}
-        선택한 관심 종목이 없습니다.
-      {% endif %}
-    </p>
+  </div>
+  <div style="padding: 0 2.5rem 2.5rem 2.5rem;">
+    <div style="background: var(--color-bg); padding: 2rem; border-radius: var(--radius);">
+      <h4 style="margin: 0 0 1rem 0; color: var(--color-text); font-weight: 800; font-size: 1.2rem;">관심 종목</h4>
+      <p style="margin: 0; color: var(--color-secondary); line-height: 1.6;">
+        {% if interest_stocks %}
+          {% for stock in interest_stocks %}
+            <span style="display: inline-block; padding: 0.4rem 1rem; background: var(--color-bg-card); border-radius: 9999px; font-weight: 700; font-size: 0.95rem; margin-right: 0.5rem; margin-bottom: 0.5rem; box-shadow: var(--shadow-sm); color: var(--color-text);">{{ stock }}</span>
+          {% endfor %}
+        {% else %}
+          <span style="font-size: 0.95rem; font-weight: 500;">선택한 관심 종목이 없습니다.</span>
+        {% endif %}
+      </p>
+    </div>
   </div>
 </div>
 
-<h2 class="page-title mt-4" style="margin-top: 2rem;">작성한 게시글</h2>
+{% if user == person %}
+<div class="card-item mt-4" style="background: var(--color-primary-light); border: none; padding: 2.5rem;">
+  <h2 style="margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 800; color: var(--color-text);">🤖 LLM 투자 성향 분석</h2>
+  <p style="color: var(--color-text-muted); font-weight: 500; font-size: 1.05rem; margin-bottom: 1.5rem;">
+    작성하신 커뮤니티 게시글을 바탕으로 투자 성향을 분석해 드립니다.
+  </p>
+  
+  {% if analysis_result %}
+  <div style="background: var(--color-bg-card); padding: 2rem; border-radius: var(--radius); margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
+    <h3 style="margin: 0 0 1rem 0; font-size: 1.2rem; font-weight: 800; color: var(--color-primary);">분석 결과</h3>
+    <div style="white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem; color: var(--color-text); font-weight: 500;">{{ analysis_result }}</div>
+  </div>
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="analyze">
+    <button type="submit" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem; font-weight: 800; border-radius: 9999px;">
+      지금 내 투자 성향 분석하기
+    </button>
+  </form>
+</div>
+{% endif %}
+
+<h2 class="page-title mt-4" style="margin-top: 3rem; margin-bottom: 1.5rem;">작성한 게시글</h2>
 {% if posts %}
-  <ul style="list-style: none; padding: 0;">
+  <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
     {% for post in posts %}
-      <li class="card-item mb-2 mt-2">
-        <a href="{% url 'community:post_detail' post.asset_id post.id %}">{{ post.title }}</a>
-        <div class="text-muted" style="margin-top: 5px;">{{ post.created_at|date:"Y-m-d H:i" }}</div>
+      <li class="card-item" style="padding: 1.5rem 2rem; border: none; background: var(--color-bg-card);">
+        <a href="{% url 'community:post_detail' post.asset_id post.id %}" style="font-size: 1.2rem; font-weight: 800;">{{ post.title }}</a>
+        <div class="text-muted" style="margin-top: 0.5rem; font-weight: 500;">{{ post.created_at|date:"Y.m.d H:i" }}</div>
       </li>
     {% endfor %}
   </ul>
 {% else %}
-  <p class="text-muted mt-2">작성한 게시글이 없습니다.</p>
+  <div class="card-item" style="text-align: center; padding: 4rem 2rem; border: none; background: var(--color-bg-card);">
+    <p class="text-muted" style="font-size: 1.1rem; font-weight: 600; margin: 0;">작성한 게시글이 없습니다.</p>
+  </div>
 {% endif %}
 {% endblock %}

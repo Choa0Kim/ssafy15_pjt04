@@ -15,3 +15,17 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    """게시글의 댓글"""
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    content = models.TextField()
+    author = models.CharField(max_length=150, default="익명", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.author} - {self.content[:20]}"
